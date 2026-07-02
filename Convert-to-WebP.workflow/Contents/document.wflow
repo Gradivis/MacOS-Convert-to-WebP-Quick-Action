@@ -61,33 +61,24 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-# Function to check if sips supports WebP
-function sips_supports_webp() {
-    sips -s format webp /dev/null &amp;&gt; /dev/null
-    return $?  # Returns 0 if sips supports webp, non-zero otherwise
-}
+# Homebrew is not on Automator's default PATH; add it.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 
-# Check for sips support
-if sips_supports_webp; then
-    echo "Using sips for WebP conversion."
-    for f in "$@"
-    do
+# Note: on recent macOS, `sips` reports WebP support but fails to WRITE it
+# (Error 13). So prefer cwebp when it is available.
+if command -v cwebp &amp;&gt; /dev/null; then
+    for f in "$@"; do
+        output="${f%.*}.webp"
+        cwebp "$f" -o "$output"
+    done
+elif sips -s format webp /dev/null &amp;&gt; /dev/null; then
+    for f in "$@"; do
         output="${f%.*}.webp"
         sips -s format webp "$f" --out "$output"
     done
 else
-    echo "sips does not support WebP. Checking for cwebp."
-    if command -v cwebp &amp;&gt; /dev/null; then
-        echo "Using cwebp for WebP conversion."
-        for f in "$@"
-        do
-            output="${f%.*}.webp"
-            cwebp "$f" -o "$output"
-        done
-    else
-        echo "Error: Neither sips nor cwebp is available for WebP conversion."
-        exit 1
-    fi
+    echo "Error: Neither cwebp nor sips can write WebP." &gt;&amp;2
+    exit 1
 fi</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
