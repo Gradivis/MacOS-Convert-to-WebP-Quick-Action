@@ -5,9 +5,20 @@ This repository provides an Automator workflow that allows macOS users to easily
 
 ## **Features**
 - Converts image files (JPG, PNG, etc.) to WebP format.
-- Detects whether your macOS version supports WebP conversion via `sips`.
-- Falls back to `cwebp` for robust compatibility.
+- Prefers Google's `cwebp` for reliable conversion, falling back to `sips`.
 - Accessible via right-click in Finder for quick and seamless operation.
+
+---
+
+## **Requirements**
+
+Install Google's `cwebp` tool via [Homebrew](https://brew.sh/):
+
+```bash
+brew install webp
+```
+
+On recent macOS, `sips` reports WebP support but fails to write the file, so `cwebp` is recommended.
 
 ---
 
@@ -15,7 +26,7 @@ This repository provides an Automator workflow that allows macOS users to easily
 
 1. **Download the Workflow File:**
    - Clone or download this repository.
-   - Locate the `.workflow` file (e.g., `Convert to WebP.workflow`).
+   - Locate the `.workflow` file (e.g., `Convert-to-WebP.workflow`).
 
 2. **Install the Workflow:**
    - Double-click the `.workflow` file.
@@ -60,10 +71,9 @@ If you are running an older macOS version or `sips` does not support WebP, you n
 
 ## **How It Works**
 
-1. The workflow checks if the built-in `sips` tool can handle WebP conversion.
-2. If supported, it uses `sips` to convert the image.
-3. If not supported, it falls back to `cwebp` (if installed).
-4. If neither `sips` nor `cwebp` is available, the workflow will display an error.
+1. The workflow uses `cwebp` to convert the image when it is installed.
+2. If `cwebp` is not found, it falls back to `sips`.
+3. If neither `cwebp` nor `sips` can write WebP, the workflow displays an error.
 
 ---
 
@@ -90,7 +100,7 @@ If you are running an older macOS version or `sips` does not support WebP, you n
 ## **Customizing the Workflow**
 To modify the behavior or add additional features:
 1. Open **Automator**.
-2. Locate and open the `Convert to WebP.workflow` file.
+2. Locate and open the `Convert-to-WebP.workflow` file.
 3. Adjust the script or settings as needed.
 
 ---
